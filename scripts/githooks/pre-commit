@@ -1,0 +1,18 @@
+#!/bin/bash
+
+clang_format_version=$(clang-format --version)
+clang_format_version=${clang_format_version:21:2}
+echo $clang_format_version
+
+if [[ $clang_format_version -ge 14 ]]
+then
+    for file in `git diff --staged --name-only | grep -i -E '\.(cpp|h)$'`; do
+        echo ${file}
+        clang-format -i ${file}
+        git add ${file}
+    done
+else
+    echo WARNING!!!!
+    echo Your clang-format version:${clang_format_version} -- it doesnt match, you need install: clang-format version 14.0.0
+    echo CLANG-FORMAT doesnt work!
+fi

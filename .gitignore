@@ -1,0 +1,6 @@
+# build dirs
+build/*
+bin/*
+
+# ide/editors files
+.vscode
