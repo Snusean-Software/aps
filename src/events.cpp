@@ -6,7 +6,7 @@
 #include <iostream>
 #include <bitset>
 
-TEventMask InitEvent( const char* name )
+TEventMask InitSysEvent( const char* name )
 {
      int event = System->FreeEvent;
      System->FreeEvent++;
@@ -15,7 +15,7 @@ TEventMask InitEvent( const char* name )
      return ( 1 << event );
 }
 
-void SetEvent( TTaskID id, TEventMask event )
+void SetSysEvent( TEventMask event )
 {
      TTask* taskQueue = System->TaskQueue;
      int runningTask = System->RunningTask;
@@ -34,7 +34,7 @@ void SetEvent( TTaskID id, TEventMask event )
      swapcontext( &taskQueue[ runningTask ].context, &System->DispatchContext );
 }
 
-void WaitEvent( TEventMask event )
+void WaitSysEvent( TEventMask event )
 {
      TTask* taskQueue = System->TaskQueue;
      int runningTask = System->RunningTask;
@@ -52,11 +52,6 @@ void WaitEvent( TEventMask event )
      std::cout << task->name << " received events " << std::bitset<MAX_EVENTS>( triggeredEvents ) << "\n";
      task->eventMask |= triggeredEvents;
      std::cout << task->name << " events " << std::bitset<MAX_EVENTS>( task->eventMask ) << "\n";
-}
-
-void ClearEvent( TEventMask mask )
-{
-     System->TaskQueue[ System->RunningTask ].eventMask &= ~mask;
 }
 
 void GetEvent( TTaskID id, TEventMask* event )
