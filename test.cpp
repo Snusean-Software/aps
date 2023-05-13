@@ -27,10 +27,34 @@ TResourceID Res1 = "Res1";
 
 int main( void )
 {
-     StartOS( Task8 );
-     ShutdownOS();
+     printf( "1 - Test Preemptive algorithm\n"
+             "2 - Test PIP resource managment algorithm\n"
+             "3 - Test System events\n"
+             "4 - Test All functionality\n"
+             "Enter test num: " );
+     int test_num = 0;
+     scanf( "%d", &test_num );
+     printf( "\n\nRun results\n\n" );
+     switch ( test_num )
+     {
+          case 1:
+               StartOS( Task1 );
+               break;
+          case 2:
+               StartOS( Task4 );
+               break;
+          case 3:
+               StartOS( Task6 );
+               break;
+          case 4:
+               StartOS( Task8 );
+               break;
+          default:
+               printf( "Wrong test num.\n" );
+               return 1;
+     }
 
-     delete System;
+     ShutdownOS();
      return 0;
 }
 
@@ -82,7 +106,7 @@ TASK( Task5 )
 }
 /*******************************/
 
-/* Test 3 Tasks events */
+/* Test 3 System events */
 TASK( Task6 )
 {
      printf( "Task 6 started!\n" );

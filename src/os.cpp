@@ -32,5 +32,6 @@ int StartOS( TTaskID task )
 
 void ShutdownOS()
 {
+     delete System;
      printf( "[ShutdownOS]\n" );
 }
