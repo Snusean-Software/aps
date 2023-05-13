@@ -49,10 +49,10 @@ void ActivateTask( TTaskID id )
 void TerminateTask( void )
 {
      int task = System->RunningTask;
-     printf( "[Terminate Task] %s\n", System->TaskQueue[ task ].name );
+     printf( "[TerminateTask] %s\n", System->TaskQueue[ task ].name );
      System->TaskQueue[ task ].state = TASK_DONE;
      System->RunningTask = _NULL;
-     printf( "End of Terminate %s\n", System->TaskQueue[ task ].name );
+     printf( "End of [TerminateTask] %s\n", System->TaskQueue[ task ].name );
      swapcontext( &System->TaskQueue[ task ].context, &System->DispatchContext );
 }
 

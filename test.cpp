@@ -21,7 +21,7 @@ DeclareTask( Task9, 10, "Task9" );
 
 DeclareTask( Task10, 5, "Task10" );
 
-DeclareEvent( Event1, "Event1" );
+DeclareSysEvent( Event1 );
 
 TResourceID Res1 = "Res1";
 
@@ -33,7 +33,8 @@ int main( void )
      delete System;
      return 0;
 }
-// Test 1 Preemptive algorithm
+
+/* Test 1 Preemptive algorithm */
 TASK( Task1 )
 {
      printf( "Task 1 started!\n" );
@@ -56,8 +57,9 @@ TASK( Task3 )
      printf( "Task 3 finished!\n" );
      TerminateTask();
 }
+/*******************************/
 
-// Test 2 PIP resource managment algorithm
+/* Test 2 PIP resource managment algorithm */
 TASK( Task4 )
 {
      printf( "Task 4 started!\n" );
@@ -78,12 +80,14 @@ TASK( Task5 )
      TerminateTask();
      printf( "Task 5 finished!\n" );
 }
-// Test 3 Tasks events
+/*******************************/
+
+/* Test 3 Tasks events */
 TASK( Task6 )
 {
      printf( "Task 6 started!\n" );
      ActivateTask( Task7 );
-     WaitEvent( Event1 );
+     WaitSysEvent( Event1 );
      printf( "Task6 finished\n" );
      TerminateTask();
 }
@@ -91,16 +95,18 @@ TASK( Task6 )
 TASK( Task7 )
 {
      printf( "Task 7 started!\n" );
-     SetEvent( Task6, Event1 );
+     SetSysEvent( Event1 );
      printf( "Task7 finished\n" );
      TerminateTask();
 }
-// Test 4 All functionality
+/*******************************/
+
+/* Test 4 All functionality */
 TASK( Task8 )
 {
      printf( "Task 8 started!\n" );
      ActivateTask( Task9 );
-     WaitEvent( Event1 );
+     WaitSysEvent( Event1 );
      printf( "Task 8 finished\n" );
      TerminateTask();
 }
@@ -121,8 +127,9 @@ TASK( Task10 )
      printf( "Task 10 started!\n" );
      InitRes( Res1 );
      PIP_GetRes( Res1 );
-     SetEvent( Task8, Event1 );
+     SetSysEvent( Event1 );
      PIP_ReleaseRes( Res1 );
      printf( "Task 10 finished\n" );
      TerminateTask();
 }
+/*******************************/

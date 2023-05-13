@@ -34,7 +34,7 @@ typedef struct Type_Task
      int initial_priority;
      int priority;
      TTaskState state;
-     TEventMask eventMask = 0;
+     TEventMask waitingEvents = 0;
 
      void ( *entry )( void );
 
@@ -50,17 +50,11 @@ typedef struct Type_resource
      const char* name;
 } TResource;
 
-typedef struct Event
-{
-     bool set = false;
-     const char* name;
-} TEvent;
-
 typedef struct Type_System
 {
      TTask TaskQueue[ MAX_TASK ];
      TResource ResourceQueue[ MAX_RES ];
-     TEvent EventQueue[ MAX_EVENTS ];
+     TEventMask WorkingEvents = 0;
      int Priorities[ MAX_TASK ];
      int RunningTask = _NULL;
      int FreeTask = 0;

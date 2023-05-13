@@ -3,58 +3,59 @@
 /*************************************/
 #include "sys.h"
 #include "rtos_api.h"
-#include <iostream>
-#include <bitset>
+#include <cstdio>
 
-TEventMask InitSysEvent( const char* name )
+TEventMask InitSysEvent()
 {
+     if ( System->FreeEvent >= MAX_EVENTS )
+     {
+          printf( "[CRIT] Maximum count of declared events reached.\n" );
+          return 0;
+     }
      int event = System->FreeEvent;
      System->FreeEvent++;
-     System->EventQueue[ event ].name = name;
-
      return ( 1 << event );
 }
 
 void SetSysEvent( TEventMask event )
 {
+     printf( "[SetSysEvent] mask: %i\n", event );
+
      TTask* taskQueue = System->TaskQueue;
-     int runningTask = System->RunningTask;
 
-     TTask* task = &taskQueue[ id ];
-     TEventMask eventsToSet = event & ~task->eventMask;
-
-     std::cout << "Events " << std::bitset<MAX_EVENTS>( eventsToSet ) << " are set for " << task->name << "\n";
-     task->eventMask |= eventsToSet;
-
-     if ( eventsToSet )
+     System->WorkingEvents |= event;
+     for ( int i = 0; i < MAX_TASK; i++ )
      {
-          task->state = TASK_READY;
+          if ( taskQueue[ i ].state == TASK_WAITING && ( System->WorkingEvents & taskQueue[ i ].waitingEvents ) )
+          {
+               taskQueue[ i ].waitingEvents &= !event;
+               taskQueue[ i ].state = TASK_READY;
+               printf( "Task \"%s\" is ready\n", taskQueue[ i ].name );
+          }
      }
 
+     int runningTask = System->RunningTask;
      swapcontext( &taskQueue[ runningTask ].context, &System->DispatchContext );
 }
 
 void WaitSysEvent( TEventMask event )
 {
+     printf( "[WaitSysEvent] mask: %i\n", event );
+
      TTask* taskQueue = System->TaskQueue;
      int runningTask = System->RunningTask;
-
      TTask* task = &taskQueue[ runningTask ];
-     std::cout << task->name << " is waiting events " << std::bitset<MAX_EVENTS>( event ) << "\n";
 
-     while ( !( event & task->eventMask ) )
+     if ( !( System->WorkingEvents & event ) )
      {
+          task->waitingEvents |= event;
           task->state = TASK_WAITING;
           swapcontext( &taskQueue[ runningTask ].context, &System->DispatchContext );
      }
-
-     TEventMask triggeredEvents = event & task->eventMask;
-     std::cout << task->name << " received events " << std::bitset<MAX_EVENTS>( triggeredEvents ) << "\n";
-     task->eventMask |= triggeredEvents;
-     std::cout << task->name << " events " << std::bitset<MAX_EVENTS>( task->eventMask ) << "\n";
+     printf( "End of [WaitSysEvent]\n" );
 }
 
-void GetEvent( TTaskID id, TEventMask* event )
+void GetSysEvent( TEventMask* event )
 {
-     *event = System->TaskQueue[ id ].eventMask;
+     *event = System->WorkingEvents;
 }

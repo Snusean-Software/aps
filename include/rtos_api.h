@@ -11,13 +11,13 @@
 // Осуществляет регистрацию задачи в системе
 #define DeclareTask( TaskID, period, name )                                                                            \
      TASK( TaskID );                                                                                                   \
-     TTaskID TaskID = InitTask( TaskID##entry, name, period );
+     TTaskID TaskID = InitTask( TaskID##entry, name, period )
 
 #define TASK( TaskID ) void TaskID##entry( void )
 
 // Осуществляет регистрацию события в системе
 // Должен вызываться ДО использования идентификатора события в коде пользовательского приложения.
-#define DeclareSysEvent( EventID, name ) TEventMask EventID = InitSysEvent( name );
+#define DeclareSysEvent( EventID ) TEventMask EventID = InitSysEvent();
 
 /**********************************************************/
 
@@ -66,7 +66,7 @@ void PIP_ReleaseRes( TResourceID res );
 /* EVENT */
 
 // Инициализация системного события
-TEventMask InitSysEvent( const char* name );
+TEventMask InitSysEvent();
 
 // Устанавливает системные события, задаваемые маской mask. При вызове данного сервиса любая задача будет переведена в
 // готовое состояние, если она ждала хотя бы одного из событий, заданных маской mask.
@@ -83,7 +83,5 @@ void GetSysEvent( TEventMask* event );
 void WaitSysEvent( TEventMask event );
 
 /**********************************************************/
-
-bool AddPeriod( int period );
 
 #endif // RTOS_API_H
