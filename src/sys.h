@@ -10,9 +10,8 @@
 #include <cstring>
 #include <ucontext.h>
 
-#ifndef SIGSTKSZ
+#undef SIGSTKSZ
 #define SIGSTKSZ 8192
-#endif
 
 #define INSERT_TO_TAIL 1
 #define INSERT_TO_HEAD 0
